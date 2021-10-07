@@ -5,6 +5,11 @@ Given /the following movies exist/ do |movies_table|
   end
 end
 
+Then /(.*) seed movies should exist/ do | n_seeds |
+  #Movie.count.should be n_seeds.to_i
+  expect(Movie.count).to eq n_seeds.to_i
+end
+
 Then /I should see "(.*)" before "(.*)"/ do |e1, e2|
   #  ensure that that e1 occurs before e2.
   #  page.body is the entire content of the page as a string.
@@ -22,4 +27,11 @@ Then /I should see all the movies/ do
   Movie.all.each do |movie|
     step %{I should see "#{movie.title}"}
   end
+end
+
+
+#   Then the director of "Alien" should be "Ridley Scott"
+Then /the director of "(.*)" should be "(.*)"/ do |movie, director|
+  page.should have_content(movie)
+  page.should have_content(director)
 end

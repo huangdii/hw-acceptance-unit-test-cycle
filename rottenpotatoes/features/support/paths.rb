@@ -20,13 +20,25 @@ module NavigationHelpers
     #
     #   when /^(.*)'s profile page$/i
     #     user_profile_path(User.find_by_login($1))
-
+    # Scenario 1
+    when /^the edit page for "(.*)"$/
+      movie_id = Movie.find_by(title: $1).id
+      edit_movie_path(movie_id)
+      
+    # Scenario 2
+    when /^the details page for "(.+)"$/
+      movie = Movie.find_by(title: $1)
+      movie_path(movie)
+      
+    # Scenario 3
+    when /^the Similar Movies page for "(.+)"/
+      search_similar_movies_path($1)
     else
       begin
         page_name =~ /^the (.*) page$/
         path_components = $1.split(/\s+/)
         self.send(path_components.push('path').join('_').to_sym)
-      rescue NoMethodError, ArgumentError
+      rescue ArgumentError, NoMethodError
         raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
           "Now, go and add a mapping in #{__FILE__}"
       end

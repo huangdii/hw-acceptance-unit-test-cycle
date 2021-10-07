@@ -10,6 +10,19 @@
     Released on:
     <%= @movie.release_date.strftime("%B %d, %Y") %>
   </li>
+  <% if @movie.director and !@movie.director.empty? %>
+    <li>
+      Director:
+      <%= @movie.director %>
+    </li>
+  <!--  <p>-->
+  <!--    <%= link_to 'Find Movies With Same Director', search_similar_movies_path(@movie.title) %>-->
+  <!--  </p>-->
+  <!--<% else %>-->
+  <!--  <p>-->
+  <!--    <%= link_to 'Find Movies With Same Director', movies_path(:msg => "'#{@movie.title}' has no director info") %>-->
+  <!--  </p>-->
+  <!--<% end %>-->
 </ul>
 
 <h3>Description:</h3>
@@ -18,7 +31,8 @@
 </p>
 
 <div class="row">
+  <%= link_to 'Find Movies With Same Director', search_similar_movies_path(@movie.title) %>
   <%= link_to 'Edit', edit_movie_path(@movie), :class => 'btn btn-primary col-2' %>
-  <%= link_to 'Delete', movie_path(@movie), 'data-method' => 'delete', 'data-confirm' => 'Are you sure?', :class => 'btn btn-danger col-2' %>
+  <%= button_to 'Delete', movie_path(@movie), :method => :delete, :confirm => 'Are you sure?' %>
   <%= link_to 'Back to movie list', movies_path, :class => 'btn btn-primary col-2' %>
 </div>
