@@ -6,37 +6,37 @@ describe MoviesController do
       expect(Movie).to receive(:similar_movies).with('Aladdin')
       get :search, { title: 'Aladdin' }
     end
+    
+    it "should redirect to home page if director isn't known" do
+      allow(Movie).to receive(:similar_movies).with('No name').and_return(nil)
+      get :search, { title: 'No name' }
+      expect(response).to redirect_to(root_url)
+    end
 
     it 'should assign similar movies if director exists' do
       movies = ['Seven', 'The Social Network']
-      Movie.stub(:similar_movies).with('Seven').and_return(movies)
+      allow(Movie).to receive(:similar_movies).with('Seven').and_return(movies)
       get :search, { title: 'Seven' }
       expect(assigns(:similar_movies)).to eql(movies)
-    end
-
-    it "should redirect to home page if director isn't known" do
-      Movie.stub(:similar_movies).with('No name').and_return(nil)
-      get :search, { title: 'No name' }
-      expect(response).to redirect_to(root_url)
     end
   end
 
   describe 'GET index' do
-    let!(:movie) {FactoryGirl.create(:movie)}
+    let!(:movie) {FactoryBot.create(:movie)}
 
     it 'should render the index template' do
       get :index
       expect(response).to render_template('index')
     end
 
-    it 'should assign instance variable for title header' do
-      get :index, { sort: 'title'}
-      expect(assigns(:title_header)).to eql('bg-warning hilite')
-    end
-
     it 'should assign instance variable for release_date header' do
       get :index, { sort: 'release_date'}
       expect(assigns(:date_header)).to eql('bg-warning hilite')
+    end
+    
+    it 'should assign instance variable for title header' do
+      get :index, { sort: 'title'}
+      expect(assigns(:title_header)).to eql('bg-warning hilite')
     end
   end
 
@@ -51,18 +51,18 @@ describe MoviesController do
 
   describe 'POST #create' do
     it 'creates a new movie' do
-      expect {post :create, movie: FactoryGirl.attributes_for(:movie)
+      expect {post :create, movie: FactoryBot.attributes_for(:movie)
       }.to change { Movie.count }.by(1)
     end
 
     it 'redirects to the movie index page' do
-      post :create, movie: FactoryGirl.attributes_for(:movie)
+      post :create, movie: FactoryBot.attributes_for(:movie)
       expect(response).to redirect_to(movies_url)
     end
   end
 
   describe 'GET #show' do
-    let!(:movie) { FactoryGirl.create(:movie) }
+    let!(:movie) { FactoryBot.create(:movie) }
     before(:each) do
       get :show, id: movie.id
     end
@@ -77,7 +77,7 @@ describe MoviesController do
   end
 
   describe 'GET #edit' do
-    let!(:movie) { FactoryGirl.create(:movie) }
+    let!(:movie) { FactoryBot.create(:movie) }
     before do
       get :edit, id: movie.id
     end
@@ -92,9 +92,9 @@ describe MoviesController do
   end
 
   describe 'PUT #update' do
-    let(:movie1) { FactoryGirl.create(:movie) }
+    let(:movie1) { FactoryBot.create(:movie) }
     before(:each) do
-      put :update, id: movie1.id, movie: FactoryGirl.attributes_for(:movie, title: 'Modified')
+      put :update, id: movie1.id, movie: FactoryBot.attributes_for(:movie, title: 'Modified')
     end
 
     it 'updates an existing movie' do
@@ -108,7 +108,7 @@ describe MoviesController do
   end
 
   describe 'DELETE #destroy' do
-    let!(:movie1) { FactoryGirl.create(:movie) }
+    let!(:movie1) { FactoryBot.create(:movie) }
 
     it 'destroys a movie' do
       expect { delete :destroy, id: movie1.id
